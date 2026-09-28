@@ -1,0 +1,27 @@
+# AWS credentials and secrets
+.aws/
+credentials
+
+# AWS IoT certificates and private keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*~

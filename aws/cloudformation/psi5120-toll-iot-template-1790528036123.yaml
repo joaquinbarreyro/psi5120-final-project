@@ -1,0 +1,265 @@
+---
+Metadata:
+  AWSToolsMetrics:
+    IaC_Generator: "arn:aws:cloudformation:us-east-1:162861856408:generatedTemplate/c14203de-d1fa-4bdd-a059-9dfb00c0c5b7"
+Parameters:
+  LambdaFunctionPsi5120tollimageprocessorCodeSourceKMSKeyArnGgG2N:
+    NoEcho: "true"
+    Type: "String"
+    Description: "The ARN of the KMSlong (KMS) customer managed key that's used to\
+      \ encrypt your function's .zip deployment package. If you don't provide a customer\
+      \ managed key, Lambda uses an [owned key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)."
+  LambdaFunctionPsi5120tollimageprocessorCodeZipFilelabV2:
+    NoEcho: "true"
+    Type: "String"
+    Description: "(Node.js and Python) The source code of your Lambda function. If\
+      \ you include your function source inline with this parameter, CFN places it\
+      \ in a file named ``index`` and zips it to create a [deployment package](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html).\
+      \ This zip file cannot exceed 4MB. For the ``Handler`` property, the first part\
+      \ of the handler identifier must be ``index``. For example, ``index.handler``.\n\
+      \  When you specify source code inline for a Node.js function, the ``index``\
+      \ file that CFN creates uses the extension ``.js``. This means that Node.js\
+      \ treats the file as a CommonJS module.\n When using Node.js 24 or later, Node.js\
+      \ can automatically detect if a ``.js`` file should be treated as CommonJS or\
+      \ as an ES module. To enable auto-detection, add the ``--experimental-detect-module``\
+      \ flag to the ``NODE_OPTIONS`` environment variable. For more information, see\
+      \ [Experimental Node.js features](https://docs.aws.amazon.com//lambda/latest/dg/lambda-nodejs.html#nodejs-experimental-features).\n\
+      \   For JSON, you must escape quotes and special characters such as newline\
+      \ (``\\n``) with a backslash.\n If you specify a function that interacts with\
+      \ an AWS CloudFormation custom resource, you don't have to write your own functions\
+      \ to send responses to the custom resource that invoked the function. AWS CloudFormation\
+      \ provides a response module ([cfn-response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-lambda-function-code-cfnresponsemodule.html))\
+      \ that simplifies sending responses. See [Using Lambda with CloudFormation](https://docs.aws.amazon.com/lambda/latest/dg/services-cloudformation.html)\
+      \ for details."
+  LambdaFunctionPsi5120tollimageprocessorCodeS3ObjectVersionl78Eb:
+    NoEcho: "true"
+    Type: "String"
+    Description: "For versioned objects, the version of the deployment package object\
+      \ to use."
+  LambdaFunctionPsi5120tollimageprocessorCodeS3Key0TtNf:
+    NoEcho: "true"
+    Type: "String"
+    Description: "The Amazon S3 key of the deployment package."
+  LambdaFunctionPsi5120tollimageprocessorCodeS3BucketDfbjw:
+    NoEcho: "true"
+    Type: "String"
+    Description: "An Amazon S3 bucket in the same AWS-Region as your function. The\
+      \ bucket can be in a different AWS-account."
+  LambdaFunctionPsi5120tollimageprocessorCodeS3ObjectStorageModeJQEKV:
+    NoEcho: "true"
+    Type: "String"
+    Description: "Specifies the storage mode for the deployment package. Use ``COPY``\
+      \ to store the package in LAMlong-managed storage. Use ``REFERENCE`` to read\
+      \ the package directly from the Amazon S3 bucket. If omitted, the default is\
+      \ ``COPY``.Possible values: [COPY, REFERENCE]\nThis property can be replaced\
+      \ with other types"
+  LambdaFunctionPsi5120tollimageprocessorCodeImageUrikD8pF:
+    NoEcho: "true"
+    Type: "String"
+    Description: "URI of a [container image](https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html)\
+      \ in the Amazon ECR registry."
+Resources:
+  IoTPolicy:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IoT::Policy"
+    DeletionPolicy: "Retain"
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource: "arn:aws:iot:us-east-1:162861856408:client/psi5120-toll-raspberry"
+          Action: "iot:Connect"
+          Effect: "Allow"
+        - Resource: "arn:aws:iot:us-east-1:162861856408:topicfilter/toll/result/psi5120-toll-raspberry"
+          Action: "iot:Subscribe"
+          Effect: "Allow"
+        - Resource: "arn:aws:iot:us-east-1:162861856408:topic/toll/result/psi5120-toll-raspberry"
+          Action: "iot:Receive"
+          Effect: "Allow"
+      Tags: []
+      PolicyName: "psi5120-toll-raspberry-Policy"
+  IAMRolePsi5120tollimageprocessorrolevxcv28uz:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/service-role/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::162861856408:policy/service-role/AWSLambdaBasicExecutionRole-69d1efb0-4006-41da-82dc-e4043c27c644"
+      MaxSessionDuration: 3600
+      RoleName: "psi5120-toll-image-processor-role-vxcv28uz"
+      Policies:
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "arn:aws:dynamodb:us-east-1:162861856408:table/plateList"
+            Action: "dynamodb:GetItem"
+            Effect: "Allow"
+        PolicyName: "psi5120-toll-dynamodb-read"
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "arn:aws:s3:::psi5120-toll-captures/*"
+            Action: "s3:GetObject"
+            Effect: "Allow"
+          - Resource: "*"
+            Action: "rekognition:DetectText"
+            Effect: "Allow"
+        PolicyName: "psi5120-toll-image-processing"
+      - PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Resource: "arn:aws:iot:us-east-1:162861856408:topic/toll/result/psi5120-toll-raspberry"
+            Action: "iot:Publish"
+            Effect: "Allow"
+        PolicyName: "psi5120-toll-iot-publish"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "lambda.amazonaws.com"
+  LambdaFunctionPsi5120tollimageprocessor:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::Lambda::Function"
+    DeletionPolicy: "Retain"
+    Properties:
+      MemorySize: 128
+      Description: ""
+      TracingConfig:
+        Mode: "PassThrough"
+      Timeout: 3
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: "Auto"
+      Handler: "lambda_function.lambda_handler"
+      Code:
+        SourceKMSKeyArn:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeSourceKMSKeyArnGgG2N"
+        S3ObjectVersion:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeS3ObjectVersionl78Eb"
+        S3Bucket:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeS3BucketDfbjw"
+        ZipFile:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeZipFilelabV2"
+        S3Key:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeS3Key0TtNf"
+        S3ObjectStorageMode:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeS3ObjectStorageModeJQEKV"
+        ImageUri:
+          Ref: "LambdaFunctionPsi5120tollimageprocessorCodeImageUrikD8pF"
+      Role: "arn:aws:iam::162861856408:role/service-role/psi5120-toll-image-processor-role-vxcv28uz"
+      FileSystemConfigs: []
+      FunctionName: "psi5120-toll-image-processor"
+      Runtime: "python3.14"
+      PackageType: "Zip"
+      LoggingConfig:
+        LogFormat: "Text"
+        LogGroup: "/aws/lambda/psi5120-toll-image-processor"
+      RecursiveLoop: "Terminate"
+      EphemeralStorage:
+        Size: 512
+      Architectures:
+      - "x86_64"
+  IAMManagedPolicyPolicyserviceroleAWSLambdaBasicExecutionRole69d1efb0400641da82dce4043c27c644:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::ManagedPolicy"
+    DeletionPolicy: "Retain"
+    Properties:
+      ManagedPolicyName: "AWSLambdaBasicExecutionRole-69d1efb0-4006-41da-82dc-e4043c27c644"
+      Path: "/service-role/"
+      Description: ""
+      Groups: []
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Resource: "arn:aws:logs:us-east-1:162861856408:*"
+          Action: "logs:CreateLogGroup"
+          Effect: "Allow"
+        - Resource:
+          - "arn:aws:logs:us-east-1:162861856408:log-group:/aws/lambda/psi5120-toll-image-processor:*"
+          Action:
+          - "logs:CreateLogStream"
+          - "logs:PutLogEvents"
+          Effect: "Allow"
+      Roles:
+      - "psi5120-toll-image-processor-role-vxcv28uz"
+      Users: []
+  IoTThingPsi5120tollraspberry:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IoT::Thing"
+    DeletionPolicy: "Retain"
+    Properties:
+      AttributePayload: {}
+      ThingName: "psi5120-toll-raspberry"
+  DynamoDBTablePlateList:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::DynamoDB::Table"
+    DeletionPolicy: "Retain"
+    Properties:
+      SSESpecification:
+        SSEEnabled: false
+      TableName: "plateList"
+      AttributeDefinitions:
+      - AttributeType: "S"
+        AttributeName: "plate"
+      ContributorInsightsSpecification:
+        Enabled: false
+      BillingMode: "PAY_PER_REQUEST"
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      WarmThroughput:
+        ReadUnitsPerSecond: 12000
+        WriteUnitsPerSecond: 4000
+      KeySchema:
+      - KeyType: "HASH"
+        AttributeName: "plate"
+      DeletionProtectionEnabled: false
+      TableClass: "STANDARD"
+      Tags: []
+      TimeToLiveSpecification:
+        Enabled: false
+  S3BucketPsi5120tollcaptures:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::S3::Bucket"
+    DeletionPolicy: "Retain"
+    Properties:
+      AbacStatus: "Disabled"
+      NotificationConfiguration:
+        QueueConfigurations: []
+        TopicConfigurations: []
+        LambdaConfigurations:
+        - Function: "arn:aws:lambda:us-east-1:162861856408:function:psi5120-toll-image-processor"
+          Filter:
+            S3Key:
+              Rules:
+              - Value: ".jpg"
+                Name: "Suffix"
+          Event: "s3:ObjectCreated:*"
+      PublicAccessBlockConfiguration:
+        RestrictPublicBuckets: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        BlockPublicAcls: true
+      BucketName: "psi5120-toll-captures"
+      OwnershipControls:
+        Rules:
+        - ObjectOwnership: "BucketOwnerEnforced"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+        - BucketKeyEnabled: true
+          BlockedEncryptionTypes:
+            EncryptionType:
+            - "SSE-C"
+          ServerSideEncryptionByDefault:
+            SSEAlgorithm: "AES256"
+  LambdaPermissionFunctionpsi5120tollimageprocessor:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::Lambda::Permission"
+    DeletionPolicy: "Retain"
+    Properties:
+      FunctionName: "arn:aws:lambda:us-east-1:162861856408:function:psi5120-toll-image-processor"
+      Action: "lambda:InvokeFunction"
+      SourceArn: "arn:aws:s3:::psi5120-toll-captures"
+      Principal: "s3.amazonaws.com"
+      SourceAccount: "162861856408"
